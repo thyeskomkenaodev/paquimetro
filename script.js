@@ -1,16 +1,23 @@
 class Estacionamento {
     constructor(valor) {
         this.valor = valor;
-        this.tempoPorReal = 30; // 30 minutos por R$1,00
+        this.tabela = [
+            { valor: 1.0, tempo: 30 }, // 30 minutos
+            { valor: 1.75, tempo: 60 }, // 60 minutos
+            { valor: 2.0, tempo: 60, troco: 0.25 }, // 60 minutos com troco de R$ 0,25
+            { valor: 3.0, tempo: 120 }, // 120 minutos (tempo máximo permitido)
+        ];
     }
 
     calcularTempo() {
-        if (this.valor < 1) {
-            return { mensagem: "Valor insuficiente", tempo: 0, troco: 0 };
+        const entrada = this.tabela.find((item) => this.valor === item.valor);
+
+        if (!entrada) {
+            return { mensagem: "Valor insuficiente ou inválido", tempo: 0, troco: 0 };
         }
-        const tempo = Math.floor(this.valor) * this.tempoPorReal;
-        const troco = this.valor % 1;
-        return { mensagem: "", tempo, troco };
+
+        const troco = entrada.troco !== undefined ? entrada.troco : this.valor - entrada.valor;
+        return { mensagem: "", tempo: entrada.tempo, troco };
     }
 }
 
